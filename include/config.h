@@ -5,7 +5,7 @@
 
 namespace rpg::config {
 
-// ── Configurações de Janela ──────────────────────────────────
+// ─── Configurações de Janela ────────────────────────────────────────────────
 namespace janela {
     constexpr uint32_t LARGURA_PADRAO = 1280;
     constexpr uint32_t ALTURA_PADRAO = 720;
@@ -13,7 +13,7 @@ namespace janela {
     constexpr uint32_t FPS_LIMITE = 60;
 }
 
-// ── Configurações de Cores ───────────────────────────────────
+// ─── Configurações de Cores ─────────────────────────────────────────────────
 namespace cores {
     // Fundo
     constexpr uint8_t FUNDO_R = 15;
@@ -66,7 +66,7 @@ namespace cores {
     }
 }
 
-// ── Configurações de Posição (Menu) ──────────────────────────
+// ─── Configurações de Posição (Menu) ────────────────────────────────────────
 namespace menu {
     constexpr float TITULO_X = 640.f;
     constexpr float TITULO_Y = 140.f;
@@ -83,7 +83,7 @@ namespace menu {
     constexpr float BOTOES_ALTURA = 50.f;
 }
 
-// ── Configurações de Posição (Batalha) ──────────────────────
+// ─── Configurações de Posição (Batalha) ────────────────────────────────────
 namespace batalha {
     // Barras de vida
     constexpr float BARRA_VIDA_P1_X = 60.f;
@@ -129,7 +129,7 @@ namespace batalha {
     constexpr float ESPERA_TURNO_BOT = 0.6f;
 }
 
-// ── Configurações de Caminhos de Recursos ───────────────────
+// ─── Configurações de Caminhos de Recursos ──────────────────────────────────
 namespace recursos {
     namespace fontes {
         constexpr const char* MEDIEVAL = "assets/fonts/medieval.ttf";
@@ -155,7 +155,7 @@ namespace recursos {
     }
 }
 
-// ── Configurações de Tamanhos ────────────────────────────────
+// ─── Configurações de Tamanhos ──────────────────────────────────────────────
 namespace tamanhos {
     constexpr uint32_t TAMANHO_FONTE_BOTAO = 20;
     constexpr uint32_t TAMANHO_FONTE_LABEL_BARRA = 13;

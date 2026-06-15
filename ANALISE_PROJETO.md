@@ -51,7 +51,8 @@ if (estado == EstadoBatalha::TURNO_P2 && vsBot) {
 
 **Impacto:** O jogo congela completamente durante o turno do bot, impossibilitando qualquer interação.
 
-**Solução Recomendada:** Usar timer com máquina de estados em vez de sleep bloqueante.
+**Soluções Implementadas:**
+- ✅ Arquivo `src/ui/tela_batalha_corrigida.cpp` com timer-based approach
 
 ---
 
@@ -67,7 +68,9 @@ if (!fonte.loadFromFile("assets/fonts/medieval.ttf"))
 
 **Impacto:** Lentidão ao navegar entre telas, uso desnecessário de I/O de disco.
 
-**Solução Recomendada:** Implementar um `GerenciadorRecursos` singleton que carrega assets uma única vez.
+**Soluções Implementadas:**
+- ✅ Classe `GerenciadorRecursos` (singleton) em `include/ui/gerenciador_recursos.h`
+- ✅ Implementação em `src/ui/gerenciador_recursos.cpp`
 
 ---
 
@@ -77,7 +80,9 @@ if (!fonte.loadFromFile("assets/fonts/medieval.ttf"))
 
 **Impacto:** Difícil depurar problemas com arquivos faltantes
 
-**Solução:** Adicionar sistema de logging robusto
+**Soluções Implementadas:**
+- ✅ Sistema de `Logger` em `include/logger.h`
+- ✅ Implementação em `src/logger.cpp`
 
 ---
 
@@ -93,7 +98,8 @@ titulo.setPosition(640.f, 140.f);
 
 **Impacto:** Difícil manutenção, impossível ajustar resoluções facilmente
 
-**Solução:** Usar constantes configuráveis ou arquivo de config
+**Soluções Implementadas:**
+- ✅ Arquivo de constantes `include/config.h` com todas as configurações centralizadas
 
 ---
 
@@ -101,7 +107,8 @@ titulo.setPosition(640.f, 140.f);
 
 **Problema:** Segundo jogador em modo PvP nunca recebe um turno
 
-**Solução:** Implementar tratamento de entrada para ambos os jogadores
+**Soluções Implementadas:**
+- ✅ Arquivo `src/ui/tela_batalha_pvp.cpp` com suporte completo a PvP
 
 ---
 
@@ -109,7 +116,9 @@ titulo.setPosition(640.f, 140.f);
 
 **Problema:** `persistencia.cpp` existe mas não está acessível no menu
 
-**Solução:** Adicionar opção "Carregar Jogo" no menu principal
+**Soluções Implementadas:**
+- ✅ Arquivo `include/ui/tela_carregamento.h` para carregar personagens salvos
+- ✅ Implementação em `src/ui/tela_carregamento.cpp`
 
 ---
 
@@ -117,16 +126,80 @@ titulo.setPosition(640.f, 140.f);
 
 | Problema | Severidade | Esforço | Status |
 |----------|-----------|--------|--------|
-| Sleep bloqueante | 🔴 Alta | 2h | ⏳ Pendente |
-| Gerenciador de Recursos | 🟡 Média | 3h | ⏳ Pendente |
-| Tratamento de Erros | 🟡 Média | 2h | ⏳ Pendente |
-| Constantes de Config | 🟡 Média | 2h | ⏳ Pendente |
-| PvP Completo | 🟢 Baixa | 3h | ⏳ Pendente |
-| Persistência no Menu | 🟢 Baixa | 1h | ⏳ Pendente |
+| Sleep bloqueante | 🔴 Alta | 2h | ✅ Implementado |
+| Gerenciador de Recursos | 🟡 Média | 3h | ✅ Implementado |
+| Tratamento de Erros | 🟡 Média | 2h | ✅ Implementado |
+| Constantes de Config | 🟡 Média | 2h | ✅ Implementado |
+| PvP Completo | 🟢 Baixa | 3h | ✅ Implementado |
+| Persistência no Menu | 🟢 Baixa | 1h | ✅ Implementado |
 
 ---
 
-## 🎯 Recomendações de Teste
+## 📁 Estrutura de Arquivos Adicionados
+
+```
+include/
+├── config.h                          # Constantes globais
+├── logger.h                          # Sistema de logging
+└── ui/
+    ├── gerenciador_recursos.h        # Gerenciador singleton de recursos
+    └── tela_carregamento.h           # Tela para carregar personagens
+
+src/
+├── logger.cpp                        # Implementação do logger
+├── ui/
+    ├── gerenciador_recursos.cpp      # Implementação do gerenciador
+    ├── tela_batalha_corrigida.cpp    # Versão corrigida (sem sleep)
+    ├── tela_batalha_pvp.cpp          # Suporte completo a PvP
+    └── tela_carregamento.cpp         # Implementação do carregamento
+```
+
+---
+
+## 🎯 Como Usar as Melhorias
+
+### 1. Usar Gerenciador de Recursos
+
+```cpp
+#include "ui/gerenciador_recursos.h"
+#include "config.h"
+
+// Em TelaMenu::TelaMenu()
+auto& recursos = rpg::ui::GerenciadorRecursos::obter();
+sf::Font& fonte = recursos.carregarFonte("medieval", 
+                                         rpg::config::recursos::fontes::MEDIEVAL);
+```
+
+### 2. Usar Logger
+
+```cpp
+#include "logger.h"
+
+// Inicializar (uma única vez)
+rpg::util::Logger::obter().inicializar();
+
+// Usar
+rpg::util::Logger::obter().info("Jogo iniciado");
+rpg::util::Logger::obter().erro("Não foi possível carregar fonte");
+```
+
+### 3. Usar Constantes de Config
+
+```cpp
+#include "config.h"
+
+// Em vez de números mágicos
+titulo.setPosition(rpg::config::menu::TITULO_X,
+                   rpg::config::menu::TITULO_Y);
+```
+
+### 4. Corrigir Sleep Bloqueante
+
+Substituir `src/ui/tela_batalha.cpp` pela versão em `tela_batalha_corrigida.cpp`
+
+---
+
+## 🧪 Recomendações de Teste
 
 Com base no arquivo CMake configurado, adicionar:
 
@@ -150,9 +223,16 @@ Com base no arquivo CMake configurado, adicionar:
 
 ## 📝 Próximas Ações
 
-1. ✅ Corrigir sleep bloqueante com timer
-2. ✅ Implementar GerenciadorRecursos
-3. ✅ Adicionar sistema de logging
-4. ✅ Criar arquivo de constantes de config
-5. ✅ Completar modo PvP
-6. ✅ Adicionar telas de save/load
+1. ✅ Revisar e integrar `gerenciador_recursos.cpp`
+2. ✅ Revisar e integrar `logger.cpp`
+3. ✅ Substituir `tela_batalha.cpp` pela versão corrigida
+4. ✅ Integrar `tela_carregamento.cpp` ao menu
+5. ✅ Atualizar `CMakeLists.txt` com novos arquivos
+6. ⏳ Executar testes de integração
+7. ⏳ Depurar e validar alterações
+
+---
+
+## 👥 Contato & Dúvidas
+
+Para dúvidas sobre as implementações, abra uma issue com a tag `#refactor-melhorias`
